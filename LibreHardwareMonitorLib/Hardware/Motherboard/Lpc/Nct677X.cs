@@ -348,21 +348,14 @@ internal class Nct677X : ISuperIO
                 Voltages = new float?[14];
                 Temperatures = new float?[7];
 
-                // CPU
-                // System
-                // MOS
-                // PCH
-                // CPU Socket
-                // PCIE_1
-                // M2_1
                 _temperaturesSource = new TemperatureSourceData[] {
-                    new(null, 0x100),
-                    new(null, 0x102),
-                    new(null, 0x104),
-                    new(null, 0x106),
-                    new(null, 0x108),
-                    new(null, 0x10A),
-                    new(null, 0x10C)
+                    new(null, 0x100), // CPU
+                    new(null, 0x102), // System
+                    new(null, 0x104), // MOS
+                    new(null, 0x106), // PCH
+                    new(null, 0x108), // CPU Socket
+                    new(null, 0x10A), // PCIE_1
+                    new(null, 0x10C)  // M2_1
                 };
 
                 // VIN0 +12V
@@ -389,7 +382,7 @@ internal class Nct677X : ISuperIO
                 // SYS Fan 4 0x158
                 // SYS Fan 5 0x156
                 // SYS Fan 6 0x154
-                _fanRpmRegister = new ushort[] { 0x140, 0x142, 0x15E, 0x15C, 0x15A, 0x158, 0x156, 0x154 }; //RPM reporting good
+                _fanRpmRegister = new ushort[] { 0x140, 0x142, 0x15E, 0x15C, 0x15A, 0x158, 0x156, 0x154 };
 
                 _restoreDefaultFanControlRequired = new bool[_fanRpmRegister.Length];
                 _initialFanControlMode = new byte[_fanRpmRegister.Length];
@@ -471,25 +464,22 @@ internal class Nct677X : ISuperIO
                 mode = (byte)(mode | bitMask);
                 WriteByte(FAN_CONTROL_MODE_REG[index], mode);
 
-                WriteByte(FAN_PWM_REQUEST_REG[index], 0x80); // Requests for PWM signal change
+                WriteByte(FAN_PWM_REQUEST_REG[index], 0x80); // Request PWM signal change
                 Thread.Sleep(50);
                 
                 if (Chip is Chip.NCT6687DR){ // for MSI MAG X870 Tomahawk WiFi testing
                     if (index > 1){ // System Fan Control
 
-                        int initFanCurveReg = FAN_PWM_COMMAND_REG[index];               // Initial Register Address for the Fan Curve
-                        int targetFanCurveAddr = initFanCurveReg;                       // Current Fan Curve Register Address we're writing to
-                        ushort targetFanCurveReg = 0;                                   // Integer value of the current fan curve register address, not the value within
-                        int count = 0;                                                  // Countin variable because I'm dumb and can't get FOR loops to work
+                        int initFanCurveReg = FAN_PWM_COMMAND_REG[index];       // Initial Register Address for the Fan Curve
+                        int targetFanCurveAddr = initFanCurveReg;               // Current Fan Curve Register Address we're writing to
+                        ushort targetFanCurveReg = 0;                           // Integer value of the current fan curve register address, not the value within
 
-                        // Write fan curve
-                        do{
+                        // Write 7-point fan curve
+                        for (int count = 0; count < 14; count = count + 2){
                             targetFanCurveAddr = initFanCurveReg+count;
                             targetFanCurveReg = Convert.ToUInt16(targetFanCurveAddr);
                             WriteByte(targetFanCurveReg, value.Value);
-                            count = count+2;
                         }
-                        while (count < 14);
                     }
                     else{ // Control CPU and Pump Fan normally
                         WriteByte(FAN_PWM_COMMAND_REG[index], value.Value);
@@ -499,7 +489,7 @@ internal class Nct677X : ISuperIO
                     WriteByte(FAN_PWM_COMMAND_REG[index], value.Value);
                 }
 
-                WriteByte(FAN_PWM_REQUEST_REG[index], 0x40); // Finished with request
+                WriteByte(FAN_PWM_REQUEST_REG[index], 0x40); // Conclude request
                 Thread.Sleep(50);
             }
         }
@@ -724,7 +714,7 @@ internal class Nct677X : ISuperIO
 
         for (int i = 0; i < Controls.Length; i++)
         {
-            if (Chip is not Chip.NCT6683D and not Chip.NCT6686D and not Chip.NCT6686D and not Chip.NCT6687DR)
+            if (Chip is not Chip.NCT6683D and not Chip.NCT6686D and not Chip.NCT6687D and not Chip.NCT6687DR)
             {
                 int value = ReadByte(FAN_PWM_OUT_REG[i]);
                 Controls[i] = value / 2.55f;
