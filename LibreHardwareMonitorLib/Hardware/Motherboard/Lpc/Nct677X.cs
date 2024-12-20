@@ -468,22 +468,7 @@ internal class Nct677X : ISuperIO
                 Thread.Sleep(50);
                 
                 if (Chip is Chip.NCT6687DR){ // for MSI MAG X870 Tomahawk WiFi testing
-                    if (index > 1){ // System Fan Control
-
-                        int initFanCurveReg = FAN_PWM_COMMAND_REG[index];       // Initial Register Address for the Fan Curve
-                        int targetFanCurveAddr = initFanCurveReg;               // Current Fan Curve Register Address we're writing to
-                        ushort targetFanCurveReg = 0;                           // Integer value of the current fan curve register address, not the value within
-
-                        // Write 7-point fan curve
-                        for (int count = 0; count < 14; count = count + 2){
-                            targetFanCurveAddr = initFanCurveReg+count;
-                            targetFanCurveReg = Convert.ToUInt16(targetFanCurveAddr);
-                            WriteByte(targetFanCurveReg, value.Value);
-                        }
-                    }
-                    else{ // Control CPU and Pump Fan normally
-                        WriteByte(FAN_PWM_COMMAND_REG[index], value.Value);
-                    }
+                    NCT6687DRFanCtrl(index, value.Value);
                 }
                 else{ // All other motherboards that use NCT6683/6686/6687
                     WriteByte(FAN_PWM_COMMAND_REG[index], value.Value);
@@ -991,6 +976,25 @@ internal class Nct677X : ISuperIO
         return Chip is Chip.NCT6683D or Chip.NCT6686D or Chip.NCT6687D or Chip.NCT6687DR || ((ReadByte(VENDOR_ID_HIGH_REGISTER) << 8) | ReadByte(VENDOR_ID_LOW_REGISTER)) == NUVOTON_VENDOR_ID;
     }
 
+    public void NCT6687DRFanCtrl(int index, byte? value){
+
+        if (index > 1){ // System Fan Control
+            int initFanCurveReg = FAN_PWM_COMMAND_REG[index];       // Initial Register Address for the Fan Curve
+            int targetFanCurveAddr = initFanCurveReg;               // Current Fan Curve Register Address we're writing to
+            ushort targetFanCurveReg = 0;                           // Integer value of the current fan curve register address, not the value within
+
+            // Write 7-point fan curve
+            for (int count = 0; count < 14; count = count + 2){
+                targetFanCurveAddr = initFanCurveReg+count;
+                targetFanCurveReg = Convert.ToUInt16(targetFanCurveAddr);
+                WriteByte(targetFanCurveReg, value.Value);
+            }
+        }
+        else{ // Control CPU and Pump Fan normally
+            WriteByte(FAN_PWM_COMMAND_REG[index], value.Value);
+        }
+    }
+
     private void SaveDefaultFanControl(int index)
     {
         if (!_restoreDefaultFanControlRequired[index])
@@ -1030,28 +1034,12 @@ internal class Nct677X : ISuperIO
                 Thread.Sleep(50);
 
                 if (Chip is Chip.NCT6687DR){ // for MSI MAG X870 Tomahawk WiFi testing
-                    if (index > 1){ // System Fan Control
-
-                        int initFanCurveReg = FAN_PWM_COMMAND_REG[index];       // Initial Register Address for the Fan Curve
-                        int targetFanCurveAddr = initFanCurveReg;               // Current Fan Curve Register Address we're writing to
-                        ushort targetFanCurveReg = 0;                           // Integer value of the current fan curve register address, not the value within
-
-                        // Write 7-point fan curve
-                        for (int count = 0; count < 14; count = count + 2){
-                            targetFanCurveAddr = initFanCurveReg+count;
-                            targetFanCurveReg = Convert.ToUInt16(targetFanCurveAddr);
-                            WriteByte(targetFanCurveReg, _initialFanPwmCommand[index]);
-                        }
-                    }
-                    else{ // Control CPU and Pump Fan normally
-                        WriteByte(FAN_PWM_COMMAND_REG[index], _initialFanPwmCommand[index]);
-                    }
+                    NCT6687DRFanCtrl(index, _initialFanPwmCommand[index]);
                 }
                 else{ // All other motherboards that use NCT6683/6686/6687
                     WriteByte(FAN_PWM_COMMAND_REG[index], _initialFanPwmCommand[index]);
                 }
-
-                WriteByte(FAN_PWM_COMMAND_REG[index], _initialFanPwmCommand[index]);
+                
                 WriteByte(FAN_PWM_REQUEST_REG[index], 0x40);
                 Thread.Sleep(50);
             }
