@@ -1026,8 +1026,30 @@ internal class Nct677X : ISuperIO
                 mode = (byte)(mode & ~_initialFanControlMode[index]);
                 WriteByte(FAN_CONTROL_MODE_REG[index], mode);
 
-                WriteByte(FAN_PWM_REQUEST_REG[index], 0x80);
+                WriteByte(FAN_PWM_REQUEST_REG[index], 0x80); // Request PWM signal change
                 Thread.Sleep(50);
+
+                if (Chip is Chip.NCT6687DR){ // for MSI MAG X870 Tomahawk WiFi testing
+                    if (index > 1){ // System Fan Control
+
+                        int initFanCurveReg = FAN_PWM_COMMAND_REG[index];       // Initial Register Address for the Fan Curve
+                        int targetFanCurveAddr = initFanCurveReg;               // Current Fan Curve Register Address we're writing to
+                        ushort targetFanCurveReg = 0;                           // Integer value of the current fan curve register address, not the value within
+
+                        // Write 7-point fan curve
+                        for (int count = 0; count < 14; count = count + 2){
+                            targetFanCurveAddr = initFanCurveReg+count;
+                            targetFanCurveReg = Convert.ToUInt16(targetFanCurveAddr);
+                            WriteByte(targetFanCurveReg, _initialFanPwmCommand[index]);
+                        }
+                    }
+                    else{ // Control CPU and Pump Fan normally
+                        WriteByte(FAN_PWM_COMMAND_REG[index], _initialFanPwmCommand[index]);
+                    }
+                }
+                else{ // All other motherboards that use NCT6683/6686/6687
+                    WriteByte(FAN_PWM_COMMAND_REG[index], _initialFanPwmCommand[index]);
+                }
 
                 WriteByte(FAN_PWM_COMMAND_REG[index], _initialFanPwmCommand[index]);
                 WriteByte(FAN_PWM_REQUEST_REG[index], 0x40);
