@@ -67,7 +67,7 @@ internal class LpcIO
         {
             var port = new LpcPort(REGISTER_PORTS[i], VALUE_PORTS[i]);
 
-            if (DetectWinbondFintek(port)) continue;
+            if (DetectWinbondFintek(port, motherboard)) continue;
 
             if (DetectIT87(port, motherboard)) continue;
 
@@ -85,7 +85,7 @@ internal class LpcIO
         return null;
     }
 
-    private bool DetectWinbondFintek(LpcPort port)
+    private bool DetectWinbondFintek(LpcPort port, Motherboard motherboard)
     {
         port.WinbondNuvotonFintekEnter();
 
@@ -389,8 +389,15 @@ internal class LpcIO
             case 0xD5:
                 switch (revision)
                 {
-                    case 0x92:
-                        chip = Chip.NCT6687D;
+                    case 0x92:                                
+                        // DEBUG
+                        if (motherboard.Model is Model.X870_TOMAHAWK_WIFI){ 
+                            chip = Chip.NCT6687DR;
+                        }
+                        else{
+                            chip = Chip.NCT6687D;
+                        }
+                        // DEBUG                        
                         logicalDeviceNumber = WINBOND_NUVOTON_HARDWARE_MONITOR_LDN;
                         break;
                 }
@@ -492,6 +499,7 @@ internal class LpcIO
                 case Chip.NCT6799D:
                 case Chip.NCT6686D:
                 case Chip.NCT6687D:
+                case Chip.NCT6687DR:
                 case Chip.NCT6683D:
                     _superIOs.Add(new Nct677X(chip, revision, address, port));
                     break;
