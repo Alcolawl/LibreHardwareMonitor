@@ -133,6 +133,8 @@ public enum Model
     Z68_MS7672,
     X570_Gaming_Plus,
     X870_TOMAHAWK_WIFI,
+    X870P_PRO_WIFI,
+    X870E_CARBON_WIFI,
 
     // EVGA
     X58_SLI_Classified,

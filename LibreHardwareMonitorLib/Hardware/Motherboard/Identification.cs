@@ -609,6 +609,10 @@ internal class Identification
                 return Model.X870E_AORUS_PRO_ICE;
             case var _ when name.Equals("MAG X870 TOMAHAWK WIFI (MS-7E51)", StringComparison.OrdinalIgnoreCase):
                 return Model.X870_TOMAHAWK_WIFI;
+            case var _ when name.Equals("PRO X870-P WIFI (MS-7E47)", StringComparison.OrdinalIgnoreCase):
+                return Model.X870P_PRO_WIFI;
+            case var _ when name.Equals("MPG X870E CARBON WIFI (MS-7E49)", StringComparison.OrdinalIgnoreCase):
+                return Model.X870E_CARBON_WIFI;
             case var _ when name.Equals("Base Board Product Name", StringComparison.OrdinalIgnoreCase):
             case var _ when name.Equals("To be filled by O.E.M.", StringComparison.OrdinalIgnoreCase):
                 return Model.Unknown;

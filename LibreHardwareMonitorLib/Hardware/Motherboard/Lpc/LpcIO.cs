@@ -391,7 +391,7 @@ internal class LpcIO
                 {
                     case 0x92:                                
                         // DEBUG
-                        if (motherboard.Model is Model.X870_TOMAHAWK_WIFI){ 
+                        if (motherboard.Model is Model.X870_TOMAHAWK_WIFI or Model.X870P_PRO_WIFI or Model.X870E_CARBON_WIFI){ 
                             chip = Chip.NCT6687DR;
                         }
                         else{
