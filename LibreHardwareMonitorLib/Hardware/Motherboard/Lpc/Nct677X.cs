@@ -458,17 +458,23 @@ internal class Nct677X : ISuperIO
                 // bit 5 : SYS Fan 4
                 // bit 6 : SYS Fan 5
                 // bit 7 : SYS Fan 6
-
                 byte mode = ReadByte(FAN_CONTROL_MODE_REG[index]);
                 byte bitMask = (byte)(0x01 << index);
                 mode = (byte)(mode | bitMask);
-                WriteByte(FAN_CONTROL_MODE_REG[index], mode);
+                WriteByte(FAN_CONTROL_MODE_REG[index], mode); // Supposed to be setting the fan to manual mode, but isn't -- NCT6687D-R
 
                 WriteByte(FAN_PWM_REQUEST_REG[index], 0x80); // Request PWM signal change
                 Thread.Sleep(50);
                 
-                if (Chip is Chip.NCT6687DR){ // for MSI MAG X870 Tomahawk WiFi testing
-                    NCT6687DRFanCtrl(index, value.Value);
+                if (Chip is Chip.NCT6687DR){ // for X870 NCT6687D Testing
+
+                    // Check if the fan is already at the requested value
+                    if (FAN_LAST_REQ_SPEED[index] == value.Value){
+                        return;
+                    }else{ // Otherwise, overwrite last requested speed and continue with fan manipulation
+                        FAN_LAST_REQ_SPEED[index] = value.Value;
+                        NCT6687DRFanCtrl(index, value.Value);
+                    }
                 }
                 else{ // All other motherboards that use NCT6683/6686/6687
                     WriteByte(FAN_PWM_COMMAND_REG[index], value.Value);
@@ -980,7 +986,7 @@ internal class Nct677X : ISuperIO
 
         if (index > 1){ // System Fan Control
             int initFanCurveReg = FAN_PWM_COMMAND_REG[index];       // Initial Register Address for the Fan Curve
-            int targetFanCurveAddr = initFanCurveReg;               // Current Fan Curve Register Address we're writing to
+            int targetFanCurveAddr = initFanCurveReg;               // Address of the Current Fan Curve Register we're writing to
             ushort targetFanCurveReg = 0;                           // Integer value of the current fan curve register address, not the value within
 
             // Write 7-point fan curve
@@ -1033,7 +1039,7 @@ internal class Nct677X : ISuperIO
                 WriteByte(FAN_PWM_REQUEST_REG[index], 0x80); // Request PWM signal change
                 Thread.Sleep(50);
 
-                if (Chip is Chip.NCT6687DR){ // for MSI MAG X870 Tomahawk WiFi testing
+                if (Chip is Chip.NCT6687DR){ // for X870 boards using NCT6687D
                     NCT6687DRFanCtrl(index, _initialFanPwmCommand[index]);
                 }
                 else{ // All other motherboards that use NCT6683/6686/6687
@@ -1143,6 +1149,8 @@ internal class Nct677X : ISuperIO
 
     private const ushort NUVOTON_VENDOR_ID = 0x5CA3;
 
+    // Used for NCT6687D-R Fan Control Optimization
+    private ushort[] FAN_LAST_REQ_SPEED = new ushort[] {0,0,0,0,0,0,0,0};
     private readonly ushort[] FAN_CONTROL_MODE_REG;
     private readonly ushort[] FAN_PWM_COMMAND_REG;
     private readonly ushort[] FAN_PWM_OUT_REG;
