@@ -77,7 +77,7 @@ internal class Nct677X : ISuperIO
             FAN_CONTROL_MODE_REG = new ushort[] { 0xA00, 0xA00, 0xA00, 0xA00, 0xA00, 0xA00, 0xA00, 0xA00 };
             FAN_PWM_REQUEST_REG = new ushort[] { 0xA01, 0xA01, 0xA01, 0xA01, 0xA01, 0xA01, 0xA01, 0xA01 };
         }
-        else if (chip is Chip.NCT6687DR) // MSI MAG X870 Tomahawk WiFi
+        else if (chip is Chip.NCT6687DR) // New MSI X870 Z890 Boards
         {
             FAN_PWM_OUT_REG = new ushort[] { 0x160, 0x161, 0xE05, 0xE04, 0xE03, 0xE02, 0xE01, 0xE00 }; // PWM Signal % Sensors CONFIRMED
             FAN_PWM_COMMAND_REG = new ushort[] { 0xA28, 0xA29, 0xC70, 0xC58, 0xC40, 0xC28, 0xC10, 0xBF8 }; // Control Registers for CPU/Pump, Initial Fan Curve Registers for System Fans
@@ -466,7 +466,7 @@ internal class Nct677X : ISuperIO
                 WriteByte(FAN_PWM_REQUEST_REG[index], 0x80); // Request PWM signal change
                 Thread.Sleep(50);
                 
-                if (Chip is Chip.NCT6687DR){ // for X870 NCT6687D Testing
+                if (Chip is Chip.NCT6687DR){ // for X870/Z890 NCT6687D Testing
 
                     // Check if the fan is already at the requested value
                     if (FAN_LAST_REQ_SPEED[index] == value.Value){

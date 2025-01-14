@@ -135,6 +135,9 @@ public enum Model
     X870_TOMAHAWK_WIFI,
     X870P_PRO_WIFI,
     X870E_CARBON_WIFI,
+    Z890_TOMAHAWK_WIFI,
+    Z890_CARBON_WIFI,
+
 
     // EVGA
     X58_SLI_Classified,

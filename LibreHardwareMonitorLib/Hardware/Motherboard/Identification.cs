@@ -613,6 +613,10 @@ internal class Identification
                 return Model.X870P_PRO_WIFI;
             case var _ when name.Equals("MPG X870E CARBON WIFI (MS-7E49)", StringComparison.OrdinalIgnoreCase):
                 return Model.X870E_CARBON_WIFI;
+            case var _ when name.Equals("MAG Z890 TOMAHAWK WIFI (MS-7E32)", StringComparison.OrdinalIgnoreCase):
+                return Model.Z890_TOMAHAWK_WIFI;
+            case var _ when name.Equals("MSI MPG Z890 CARBON WIFI (MS-7E17)", StringComparison.OrdinalIgnoreCase):
+                return Model.Z890_CARBON_WIFI;
             case var _ when name.Equals("Base Board Product Name", StringComparison.OrdinalIgnoreCase):
             case var _ when name.Equals("To be filled by O.E.M.", StringComparison.OrdinalIgnoreCase):
                 return Model.Unknown;

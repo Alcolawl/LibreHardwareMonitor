@@ -391,11 +391,17 @@ internal class LpcIO
                 {
                     case 0x92:                                
                         // DEBUG
-                        if (motherboard.Model is Model.X870_TOMAHAWK_WIFI or Model.X870P_PRO_WIFI or Model.X870E_CARBON_WIFI){ 
-                            chip = Chip.NCT6687DR;
-                        }
-                        else{
-                            chip = Chip.NCT6687D;
+                        switch (motherboard.Model){
+                            case Model.X870_TOMAHAWK_WIFI:
+                            case Model.X870P_PRO_WIFI:
+                            case Model.X870E_CARBON_WIFI:
+                            case Model.Z890_CARBON_WIFI:
+                            case Model.Z890_TOMAHAWK_WIFI:
+                                chip = Chip.NCT6687DR; // MSI X870/Z890 Compatibility
+                                break;
+                            default:
+                                chip = Chip.NCT6687D;
+                                break;
                         }
                         // DEBUG                        
                         logicalDeviceNumber = WINBOND_NUVOTON_HARDWARE_MONITOR_LDN;
