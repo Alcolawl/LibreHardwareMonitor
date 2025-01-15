@@ -988,20 +988,14 @@ internal class Nct677X : ISuperIO
             int initFanCurveReg = FAN_PWM_COMMAND_REG[index];       // Initial Register Address for the Fan Curve
             int targetFanCurveAddr = initFanCurveReg;               // Address of the Current Fan Curve Register we're writing to
             ushort targetFanCurveReg = 0;                           // Integer value of the current fan curve register address, not the value within
-            byte currentSpeed = ReadByte(FAN_PWM_OUT_REG[index]);   // Current Speed of the target fan
-        
-            // If current fan speed matches the requested speed, skip re-writing the fan curve
-            if (currentSpeed == value){
-                return;
+
+            // Write 7-point fan curve
+            for (int count = 0; count < 14; count = count + 2){
+                targetFanCurveAddr = initFanCurveReg+count;
+                targetFanCurveReg = Convert.ToUInt16(targetFanCurveAddr);
+                WriteByte(targetFanCurveReg, value.Value);
             }
-            else{
-                // Write 7-point fan curve
-                for (int count = 0; count < 14; count = count + 2){
-                    targetFanCurveAddr = initFanCurveReg+count;
-                    targetFanCurveReg = Convert.ToUInt16(targetFanCurveAddr);
-                    WriteByte(targetFanCurveReg, value.Value);
-                }
-            }
+            
         }
         else{ // Control CPU and Pump Fan normally
             WriteByte(FAN_PWM_COMMAND_REG[index], value.Value);

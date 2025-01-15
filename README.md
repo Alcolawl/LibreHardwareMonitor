@@ -9,7 +9,7 @@ If you're here, then you already know what LHM is.
 | -------- | ------- | -------- | ------- | -------- | ------- |
 | MSI | MAG X870 TOMAHAWK WIFI | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | MSI | PRO X870-P WIFI | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| MSI | MPG X870E CARBON WIFI | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| MSI | MPG X870E CARBON WIFI | :white_check_mark: | :white_check_mark: | :x: | :white_check_mark: |
 | MSI | MAG Z890 TOMAHAWK WIFI | :grey_question: | :grey_question: | :grey_question: | :x: |
 | MSI | MSI MPG Z890 CARBON WIFI | :grey_question: | :grey_question: | :grey_question: | :x: |
 
