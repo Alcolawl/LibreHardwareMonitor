@@ -461,22 +461,15 @@ internal class Nct677X : ISuperIO
                 byte mode = ReadByte(FAN_CONTROL_MODE_REG[index]);
                 byte bitMask = (byte)(0x01 << index);
                 mode = (byte)(mode | bitMask);
-                WriteByte(FAN_CONTROL_MODE_REG[index], mode); // Supposed to be setting the fan to manual mode, but isn't -- NCT6687D-R
+                WriteByte(FAN_CONTROL_MODE_REG[index], mode);
 
                 WriteByte(FAN_PWM_REQUEST_REG[index], 0x80); // Request PWM signal change
                 Thread.Sleep(50);
                 
-                if (Chip is Chip.NCT6687DR){ // for X870/Z890 NCT6687D Testing
-
-                    // Check if the fan is already at the requested value
-                    if (FAN_LAST_REQ_SPEED[index] == value.Value){
-                        return;
-                    }else{ // Otherwise,continue with fan manipulation and overwrite last requested speed
-                        NCT6687DRFanCtrl(index, value.Value);
-                        FAN_LAST_REQ_SPEED[index] = value.Value;
-                    }
+                if (Chip is Chip.NCT6687DR){ // for X870/Z890 NCT6687D functionality
+                    NCT6687DRFanCtrl(index, value.Value);
                 }
-                else{ // All other motherboards that use NCT6683/6686/6687
+                else{ // All other Nuvoton SIO controllers and motherboards that use NCT6683/6686/6687
                     WriteByte(FAN_PWM_COMMAND_REG[index], value.Value);
                 }
 
@@ -987,15 +980,21 @@ internal class Nct677X : ISuperIO
         if (index > 1){ // System Fan Control
             int initFanCurveReg = FAN_PWM_COMMAND_REG[index];       // Initial Register Address for the Fan Curve
             int targetFanCurveAddr = initFanCurveReg;               // Address of the Current Fan Curve Register we're writing to
-            ushort targetFanCurveReg = 0;                           // Integer value of the current fan curve register address, not the value within
-
-            // Write 7-point fan curve
-            for (int count = 0; count < 14; count = count + 2){
-                targetFanCurveAddr = initFanCurveReg+count;
-                targetFanCurveReg = Convert.ToUInt16(targetFanCurveAddr);
-                WriteByte(targetFanCurveReg, value.Value);
+            ushort targetFanCurveReg;                               // Integer value of the current fan curve register address, not the value within        // Check if the fan is already at the requested value
+            byte currentSpeed = ReadByte(FAN_PWM_OUT_REG[index]);   // Current Speed of the target fan
+        
+            //If so, skip re-writing the fan curve
+            if (currentSpeed == value){
+                return;
             }
-            
+            else{
+                // Write 7-point fan curve
+                for (int count = 0; count < 14; count = count + 2){
+                    targetFanCurveAddr = initFanCurveReg+count;
+                    targetFanCurveReg = Convert.ToUInt16(targetFanCurveAddr);
+                    WriteByte(targetFanCurveReg, value.Value);
+                }
+            }
         }
         else{ // Control CPU and Pump Fan normally
             WriteByte(FAN_PWM_COMMAND_REG[index], value.Value);
@@ -1150,8 +1149,6 @@ internal class Nct677X : ISuperIO
 
     private const ushort NUVOTON_VENDOR_ID = 0x5CA3;
 
-    // Used for NCT6687D-R Fan Control Optimization
-    private byte[] FAN_LAST_REQ_SPEED = new byte[8];
     private readonly ushort[] FAN_CONTROL_MODE_REG;
     private readonly ushort[] FAN_PWM_COMMAND_REG;
     private readonly ushort[] FAN_PWM_OUT_REG;
