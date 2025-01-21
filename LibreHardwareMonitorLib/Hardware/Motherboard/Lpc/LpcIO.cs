@@ -67,7 +67,7 @@ internal class LpcIO
         {
             var port = new LpcPort(REGISTER_PORTS[i], VALUE_PORTS[i]);
 
-            if (DetectWinbondFintek(port)) continue;
+            if (DetectWinbondFintek(port, motherboard)) continue;
 
             if (DetectIT87(port, motherboard)) continue;
 
@@ -85,7 +85,7 @@ internal class LpcIO
         return null;
     }
 
-    private bool DetectWinbondFintek(LpcPort port)
+    private bool DetectWinbondFintek(LpcPort port, Motherboard motherboard)
     {
         port.WinbondNuvotonFintekEnter();
 
