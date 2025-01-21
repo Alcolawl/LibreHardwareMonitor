@@ -159,6 +159,7 @@ internal class Nct677X : ISuperIO
             case Chip.NCT6797D:
             case Chip.NCT6798D:
             case Chip.NCT6799D:
+            case Chip.NCT6701D:
                 switch (chip)
                 {
                     case Chip.NCT6779D:
@@ -170,6 +171,7 @@ internal class Nct677X : ISuperIO
                     case Chip.NCT6797D:
                     case Chip.NCT6798D:
                     case Chip.NCT6799D:
+                    case Chip.NCT6701D:
                         Fans = new float?[7];
                         Controls = new float?[7];
                         break;
@@ -200,6 +202,7 @@ internal class Nct677X : ISuperIO
                     case Chip.NCT6797D:
                     case Chip.NCT6798D:
                     case Chip.NCT6799D:
+                    case Chip.NCT6701D:
                         temperaturesSources.AddRange(new TemperatureSourceData[]
                         {
                             new(SourceNct67Xxd.PECI_0, 0x073, 0x074, 7, 0x100),

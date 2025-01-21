@@ -67,7 +67,7 @@ internal class LpcIO
         {
             var port = new LpcPort(REGISTER_PORTS[i], VALUE_PORTS[i]);
 
-            if (DetectWinbondFintek(port, motherboard)) continue;
+            if (DetectWinbondFintek(port)) continue;
 
             if (DetectIT87(port, motherboard)) continue;
 
@@ -85,7 +85,7 @@ internal class LpcIO
         return null;
     }
 
-    private bool DetectWinbondFintek(LpcPort port, Motherboard motherboard)
+    private bool DetectWinbondFintek(LpcPort port)
     {
         port.WinbondNuvotonFintekEnter();
 
@@ -416,6 +416,10 @@ internal class LpcIO
                         chip = Chip.NCT6799D;
                         logicalDeviceNumber = WINBOND_NUVOTON_HARDWARE_MONITOR_LDN;
                         break;
+                    case 0x06:
+                        chip = Chip.NCT6701D;
+                        logicalDeviceNumber = WINBOND_NUVOTON_HARDWARE_MONITOR_LDN;
+                        break;
                 }
 
                 break;
@@ -507,6 +511,7 @@ internal class LpcIO
                 case Chip.NCT6687D:
                 case Chip.NCT6687DR:
                 case Chip.NCT6683D:
+                case Chip.NCT6701D:
                     _superIOs.Add(new Nct677X(chip, revision, address, port));
                     break;
 
@@ -558,7 +563,7 @@ internal class LpcIO
             port.IT87Enter();
             chipId = port.ReadWord(CHIP_ID_REGISTER);
         }
-        
+
         Chip chip = chipId switch
         {
             0x8613 => Chip.IT8613E,
