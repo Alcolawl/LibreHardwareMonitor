@@ -77,9 +77,9 @@ internal class Nct677X : ISuperIO
             FAN_CONTROL_MODE_REG = new ushort[] { 0xA00, 0xA00, 0xA00, 0xA00, 0xA00, 0xA00, 0xA00, 0xA00 };
             FAN_PWM_REQUEST_REG = new ushort[] { 0xA01, 0xA01, 0xA01, 0xA01, 0xA01, 0xA01, 0xA01, 0xA01 };
         }
-        else if (chip is Chip.NCT6687DR) // New MSI X870 Z890 Boards
+        else if (chip is Chip.NCT6687DR) // New MSI X870 and Z890 Boards
         {
-            FAN_PWM_OUT_REG = new ushort[] { 0x160, 0x161, 0xE05, 0xE04, 0xE03, 0xE02, 0xE01, 0xE00 }; // PWM Signal % Sensors CONFIRMED
+            FAN_PWM_OUT_REG = new ushort[] { 0x160, 0x161, 0xE05, 0xE04, 0xE03, 0xE02, 0xE01, 0xE00 }; // Duty Cycle Sensors
             FAN_PWM_COMMAND_REG = new ushort[] { 0xA28, 0xA29, 0xC70, 0xC58, 0xC40, 0xC28, 0xC10, 0xBF8 }; // Control Registers for CPU/Pump, Initial Fan Curve Registers for System Fans
             FAN_CONTROL_MODE_REG = new ushort[] { 0xA00, 0xA00, 0xA00, 0xA00, 0xA00, 0xA00, 0xA00, 0xA00 };
             FAN_PWM_REQUEST_REG = new ushort[] { 0xA01, 0xA01, 0xA01, 0xA01, 0xA01, 0xA01, 0xA01, 0xA01 };
@@ -466,7 +466,7 @@ internal class Nct677X : ISuperIO
                 mode = (byte)(mode | bitMask);
                 WriteByte(FAN_CONTROL_MODE_REG[index], mode);
 
-                WriteByte(FAN_PWM_REQUEST_REG[index], 0x80); // Request PWM signal change
+                WriteByte(FAN_PWM_REQUEST_REG[index], 0x80); // Request Duty Cycle change
                 Thread.Sleep(50);
                 
                 if (Chip is Chip.NCT6687DR){ // for X870/Z890 NCT6687D functionality
@@ -983,11 +983,11 @@ internal class Nct677X : ISuperIO
         if (index > 1){ // System Fan Control
             int initFanCurveReg = FAN_PWM_COMMAND_REG[index];       // Initial Register Address for the Fan Curve
             int targetFanCurveAddr = initFanCurveReg;               // Address of the Current Fan Curve Register we're writing to
-            ushort targetFanCurveReg;                               // Integer value of the current fan curve register address, not the value within        // Check if the fan is already at the requested value
+            ushort targetFanCurveReg;                               // Integer value of the current fan curve register address, not the value within
             byte currentSpeed = ReadByte(FAN_PWM_OUT_REG[index]);   // Current Speed of the target fan
         
-            //If so, skip re-writing the fan curve
-            if (currentSpeed == value){
+            //If current span duty cycle matches requested duty cycle, skip re-writing the fan curve 
+            if (currentSpeed == value.Value){
                 return;
             }
             else{
