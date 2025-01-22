@@ -10,6 +10,7 @@ If you're here, then you already know what LHM is.
 | MSI | MAG X870 TOMAHAWK WIFI | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | MSI | PRO X870-P WIFI | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | MSI | MPG X870E CARBON WIFI | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| MSI | MAG X870E TOMAHAWK WIFI | :white_check_mark: | :hammer: | :white_check_mark: | :white_check_mark: |
 | MSI | MAG Z890 TOMAHAWK WIFI | :grey_question: | :grey_question: | :grey_question: | :x: |
 | MSI | MPG Z890 CARBON WIFI | :white_check_mark: | :hammer: | :white_check_mark: | :white_check_mark: |
 
@@ -26,10 +27,11 @@ First off, verify that your motherboard uses the Nuvoton NCT6687D Super I/O cont
 
 1. Exit FanControl and ensure it is no longer running on your system before continuing. 
 2. Make a Backup your current FanControl directory by copying it to a safe location.
-3. Extract the content of the Net472 folder within the downloaded .Zip to your FanControl directory and replace all files.
-4. Upon launching FanControl, you'll have to create an all new configuration. Follow the wizard step-by-step to do so.
-5. Manually pair the speed sensors to the detected fans. This is dude to the system fans not responding as quickly as FanControl anticipates. We're working on trying to find a solution.
-6. Save the configuration. If you want to copy over your previous fan curves, etc. You can attempt to do so by opening the previous configuration JSON and copying and pasting the values to the new configuration JSON. YMMV.
+3. Ensure you have the .NET 4.8 version of FanControl (being investigated, I can't replicate issues with running other .NET versions on my end)
+4. Extract the content of the Net472 folder within the downloaded .Zip to your FanControl directory and replace all files.
+5. Upon launching FanControl, you'll have to create an all new configuration. Follow the wizard step-by-step to do so.
+6. Manually pair the speed sensors to the detected fans. This is dude to the system fans not responding as quickly as FanControl anticipates. We're working on trying to find a solution.
+7. Save the configuration. If you want to copy over your previous fan curves, etc. You can attempt to do so by opening the previous configuration JSON and copying and pasting the values to the new configuration JSON. YMMV.
 
 ## Known Issues
 
