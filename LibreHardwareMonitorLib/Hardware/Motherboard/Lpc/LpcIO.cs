@@ -398,6 +398,7 @@ internal class LpcIO
                             case Model.X870E_CARBON_WIFI:
                             case Model.Z890_CARBON_WIFI:
                             case Model.Z890_TOMAHAWK_WIFI:
+                            case Model.Z890_EDGE_TI_WIFI:
                                 chip = Chip.NCT6687DR; // MSI X870/Z890 Compatibility
                                 break;
                             default:

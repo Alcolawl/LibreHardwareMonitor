@@ -593,6 +593,24 @@ internal sealed class SuperIOHardware : Hardware
 
                         break;
 
+                    case Model.Z890_EDGE_TI_WIFI:
+                        v.Add(new Voltage("+12V", 0));
+                        v.Add(new Voltage("+5V", 1));
+                        v.Add(new Voltage("Vcore", 2));
+                        v.Add(new Voltage("VIN5", 3));
+                        v.Add(new Voltage("VDIMM", 4));
+                        v.Add(new Voltage("Chipset", 5));
+                        //v.Add(new Voltage("CPU System Agent", 6));
+                        v.Add(new Voltage("Unknown_3", 7));
+                        v.Add(new Voltage("+3.3V", 8));
+                        v.Add(new Voltage("VTT", 9));
+                        v.Add(new Voltage("+1.8V", 10));
+                        v.Add(new Voltage("+3V Standby", 11));
+                        v.Add(new Voltage("AVSB", 12));
+                        v.Add(new Voltage("CMOS Battery", 13));
+
+                        break;
+
                     default:
                         v.Add(new Voltage("+12V", 0));
                         v.Add(new Voltage("+5V", 1));

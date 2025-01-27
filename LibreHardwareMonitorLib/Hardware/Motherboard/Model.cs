@@ -141,6 +141,7 @@ public enum Model
     X870E_CARBON_WIFI,
     Z890_TOMAHAWK_WIFI,
     Z890_CARBON_WIFI,
+    Z890_EDGE_TI_WIFI,
 
 
     // EVGA
