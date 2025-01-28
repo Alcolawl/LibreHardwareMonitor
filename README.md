@@ -10,9 +10,12 @@ If you're here, then you already know what LHM is.
 | MSI | MAG X870 TOMAHAWK WIFI | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | MSI | PRO X870-P WIFI | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | MSI | MPG X870E CARBON WIFI | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| MSI | MPG X870E EDGE TI WIFI | :white_check_mark: | :hammer: | :hammer: | :x: |
 | MSI | MAG X870E TOMAHAWK WIFI | :white_check_mark: | :hammer: | :white_check_mark: | :white_check_mark: |
-| MSI | MAG Z890 TOMAHAWK WIFI | :grey_question: | :grey_question: | :grey_question: | :x: |
 | MSI | MPG Z890 CARBON WIFI | :white_check_mark: | :hammer: | :white_check_mark: | :white_check_mark: |
+| MSI | MPG Z890 EDGE TI WIFI | :white_check_mark: | :hammer: | :white_check_mark: | :white_check_mark: |
+| MSI | MAG Z890 TOMAHAWK WIFI | :grey_question: | :grey_question: | :grey_question: | :x: |
+| MSI | PRO Z890-P WIFI | :white_check_mark: | :hammer: | :white_check_mark: | :white_check_mark: |
 
 **Note:** Since I do not own all of these motherboards, the compatibility is largely dependant on your cooperation. The more dialogue we have and the more motherboard data you share directly affects how quickly compatibility for your motherboard improves.
 
