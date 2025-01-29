@@ -392,6 +392,7 @@ internal class LpcIO
                     case 0x92:                                
                         // DEBUG
                         switch (motherboard.Model){
+                            case Model.B850_TOMAHAWK_MAX_WIFI:
                             case Model.X870_TOMAHAWK_WIFI:
                             case Model.X870P_PRO_WIFI:
                             case Model.X870E_TOMAHAWK_WIFI:
@@ -401,7 +402,7 @@ internal class LpcIO
                             case Model.Z890_TOMAHAWK_WIFI:
                             case Model.Z890_EDGE_TI_WIFI:
                             case Model.Z890P_PRO_WIFI:
-                                chip = Chip.NCT6687DR; // MSI X870/Z890 Compatibility
+                                chip = Chip.NCT6687DR; // MSI B850/X870/Z890 Compatibility
                                 break;
                             default:
                                 chip = Chip.NCT6687D;

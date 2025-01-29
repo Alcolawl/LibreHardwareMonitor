@@ -135,6 +135,7 @@ public enum Model
     Z77_MS7751,
     Z68_MS7672,
     X570_Gaming_Plus,
+    B850_TOMAHAWK_MAX_WIFI,
     X870_TOMAHAWK_WIFI,
     X870E_TOMAHAWK_WIFI,
     X870P_PRO_WIFI,
