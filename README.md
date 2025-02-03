@@ -8,6 +8,7 @@ If you're here, then you already know what LHM is.
 | Manufacturer | Model | Fan Controlability | Correct Voltage Sensor Readout | Correct Temperature Sensor Layout | Community Vetted |
 | -------- | ------- | -------- | ------- | -------- | ------- |
 | MSI | MAG B850 TOMAHAWK MAX WIFI | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| MSI | X870 GAMING PLUS WIFI | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | MSI | MAG X870 TOMAHAWK WIFI | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | MSI | PRO X870-P WIFI | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | MSI | MPG X870E CARBON WIFI | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |

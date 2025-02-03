@@ -393,6 +393,7 @@ internal class LpcIO
                         // DEBUG
                         switch (motherboard.Model){
                             case Model.B850_TOMAHAWK_MAX_WIFI:
+                            case Model.X870_GAMING_PLUS_WIFI:
                             case Model.X870_TOMAHAWK_WIFI:
                             case Model.X870P_PRO_WIFI:
                             case Model.X870E_TOMAHAWK_WIFI:
