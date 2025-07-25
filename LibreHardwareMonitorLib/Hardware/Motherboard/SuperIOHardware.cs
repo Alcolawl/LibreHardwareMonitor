@@ -539,22 +539,24 @@ internal sealed class SuperIOHardware : Hardware
                 t.Add(new Temperature("Chipset", 3));
 
                 f.Add(new Fan("CPU Fan", 0));
-                f.Add(new Fan("Pump Fan #1", 1));
-                f.Add(new Fan("System Fan #1", 2));
-                f.Add(new Fan("System Fan #2", 3));
-                f.Add(new Fan("System Fan #3", 4));
-                f.Add(new Fan("System Fan #4", 5));
-                f.Add(new Fan("System Fan #5", 6));
-                f.Add(new Fan("System Fan #6", 7));
+                f.Add(new Fan("Pump Fan", 1));
+                f.Add(new Fan("System Fan #1", 10));
+                f.Add(new Fan("System Fan #2", 11));
+                f.Add(new Fan("System Fan #3", 12));
+                f.Add(new Fan("System Fan #4", 13));
+                f.Add(new Fan("System Fan #5", 14));
+                f.Add(new Fan("System Fan #6", 15));
+                f.Add(new Fan("EZ-Connect Fan", 3));
 
                 c.Add(new Control("CPU Fan", 0));
                 c.Add(new Control("Pump Fan", 1));
-                c.Add(new Control("System Fan #1", 2));
-                c.Add(new Control("System Fan #2", 3));
-                c.Add(new Control("System Fan #3", 4));
-                c.Add(new Control("System Fan #4", 5));
-                c.Add(new Control("System Fan #5", 6));
-                c.Add(new Control("System Fan #6", 7));
+                c.Add(new Control("System Fan #1", 10));
+                c.Add(new Control("System Fan #2", 11));
+                c.Add(new Control("System Fan #3", 12));
+                c.Add(new Control("System Fan #4", 13));
+                c.Add(new Control("System Fan #5", 14));
+                c.Add(new Control("System Fan #6", 15));
+                c.Add(new Control("EZ-Connect Fan", 3));
 
                 switch (model)
                 {
