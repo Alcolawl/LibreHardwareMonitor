@@ -673,6 +673,8 @@ internal class Identification
                 return Model.X870E_GODLIKE;
             case var _ when name.Equals("PRO X870-P WIFI (MS-7E47)", StringComparison.OrdinalIgnoreCase):
                 return Model.X870P_PRO_WIFI;
+            case var _ when name.Equals("PRO X870E-P WIFI (MS-7E70)", StringComparison.OrdinalIgnoreCase):
+                return Model.X870EP_PRO_WIFI;
             case var _ when name.Equals("MPG X870E CARBON WIFI (MS-7E49)", StringComparison.OrdinalIgnoreCase):
                 return Model.X870E_CARBON_WIFI;
             case var _ when name.Equals("MPG X870E EDGE TI WIFI (MS-7E59)", StringComparison.OrdinalIgnoreCase):
