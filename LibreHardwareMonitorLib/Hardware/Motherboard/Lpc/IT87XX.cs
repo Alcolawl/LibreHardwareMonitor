@@ -25,7 +25,8 @@ internal class IT87XX : ISuperIO
     private readonly int _gpioCount;
     private readonly bool _has16BitFanCounter;
     private readonly bool _hasExtReg;
-    private readonly bool[] _initialFanOutputModeEnabled = new bool[3]; // Initial Fan Controller Main Control Register value.
+    private readonly bool _hasAlt6thFanReg;
+    private readonly bool[] _initialFanOutputModeEnabled = new bool[3]; // Initial Fan Controller Main Control Register value. 
     private readonly byte[] _initialFanPwmControl = new byte[MaxFanHeaders]; // This will also store the 2nd control register value.
     private readonly byte[] _initialFanPwmControlExt = new byte[MaxFanHeaders];
     private readonly bool[] _restoreDefaultFanPwmControlRequired = new bool[MaxFanHeaders];
@@ -101,7 +102,10 @@ internal class IT87XX : ISuperIO
             Chip.IT8792E or
             Chip.IT8655E or
             Chip.IT8631E or
+            Chip.IT8638E or
             Chip.IT8696E;
+
+        _hasAlt6thFanReg = chip is Chip.IT8665E or Chip.IT8625E;
 
         switch (chip)
         {
@@ -126,6 +130,13 @@ internal class IT87XX : ISuperIO
                 break;
 
             case Chip.IT8631E:
+                Voltages = new float?[9];
+                Temperatures = new float?[2];
+                Fans = new float?[2];
+                Controls = new float?[2];
+                break;
+
+            case Chip.IT8638E:
                 Voltages = new float?[9];
                 Temperatures = new float?[2];
                 Fans = new float?[2];
@@ -218,7 +229,7 @@ internal class IT87XX : ISuperIO
         // Conflicting reports on IT8792E: either 0.0109 in linux drivers or 0.011 comparing with Gigabyte board & SIV SW.
         _voltageGain = chip switch
         {
-            Chip.IT8613E or Chip.IT8620E or Chip.IT8628E or Chip.IT8631E or Chip.IT8721F or Chip.IT8728F or Chip.IT8771E or Chip.IT8772E or Chip.IT8686E or Chip.IT8688E or Chip.IT8689E or Chip.IT8696E => 0.012f,
+            Chip.IT8613E or Chip.IT8620E or Chip.IT8628E or Chip.IT8631E or Chip.IT8638E or Chip.IT8721F or Chip.IT8728F or Chip.IT8771E or Chip.IT8772E or Chip.IT8686E or Chip.IT8688E or Chip.IT8689E or Chip.IT8696E => 0.012f,
             Chip.IT8625E or Chip.IT8792E or Chip.IT87952E => 0.011f,
             Chip.IT8655E or Chip.IT8665E => 0.0109f,
             _ => 0.016f
@@ -242,7 +253,16 @@ internal class IT87XX : ISuperIO
             }
 
             if (Fans.Length >= 6)
-                _fansDisabled[5] = (modes & (1 << 2)) == 0;
+            {
+                if (chip == Chip.IT8665E)
+                {
+                    modes = ReadByte(FAN_TACHOMETER_16BIT_REGISTER_ALT, out valid);
+                    if (valid)
+                        _fansDisabled[5] = (modes & (1 << 3)) == 0;
+                }
+                else
+                    _fansDisabled[5] = (modes & (1 << 2)) == 0;
+            }
         }
 
         // Set the number of GPIO sets
@@ -460,11 +480,11 @@ internal class IT87XX : ISuperIO
                 if (_fansDisabled[i])
                     continue;
 
-                int value = ReadByte(FAN_TACHOMETER_REG[i], out bool valid);
+                int value = ReadByte(_hasAlt6thFanReg ? FAN_TACHOMETER_REG_ALT[i] : FAN_TACHOMETER_REG[i], out bool valid);
                 if (!valid)
                     continue;
 
-                value |= ReadByte(FAN_TACHOMETER_EXT_REG[i], out valid) << 8;
+                value |= ReadByte(_hasAlt6thFanReg ? FAN_TACHOMETER_EXT_REG_ALT[i] : FAN_TACHOMETER_EXT_REG[i], out valid) << 8;
                 if (!valid)
                     continue;
 
@@ -600,6 +620,7 @@ internal class IT87XX : ISuperIO
     private const byte DATA_REGISTER_OFFSET = 0x06;
     private const byte BANK_REGISTER = 0x06; // bit 5-6 define selected bank
     private const byte FAN_TACHOMETER_16BIT_REGISTER = 0x0C;
+    private const byte FAN_TACHOMETER_16BIT_REGISTER_ALT = 0x0B;
     private const byte FAN_TACHOMETER_DIVISOR_REGISTER = 0x0B;
 
     private readonly byte[] ITE_VENDOR_IDS = { 0x90, 0x7F };
@@ -614,6 +635,8 @@ internal class IT87XX : ISuperIO
     private readonly byte[] FAN_PWM_CTRL_EXT_REG = { 0x63, 0x6b, 0x73, 0x7b, 0xa3, 0xab };
     private readonly byte[] FAN_TACHOMETER_EXT_REG = { 0x18, 0x19, 0x1a, 0x81, 0x83, 0x4d };
     private readonly byte[] FAN_TACHOMETER_REG = { 0x0d, 0x0e, 0x0f, 0x80, 0x82, 0x4c };
+    private readonly byte[] FAN_TACHOMETER_EXT_REG_ALT = { 0x18, 0x19, 0x1a, 0x81, 0x83, 0x94 };
+    private readonly byte[] FAN_TACHOMETER_REG_ALT = { 0x0d, 0x0e, 0x0f, 0x80, 0x82, 0x93 };
 
     // Address of the Fan Controller Main Control Register.
     // No need for the 2nd control register (bit 7 of 0x15 0x16 0x17),

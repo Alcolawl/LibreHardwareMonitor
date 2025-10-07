@@ -1,22 +1,19 @@
-﻿using RAMSPDToolkit.I2CSMBus.Interop.PawnIO;
+﻿using System;
+using System.Collections.Generic;
+using RAMSPDToolkit.I2CSMBus.Interop.PawnIO;
 using RAMSPDToolkit.Windows.Driver.Interfaces;
 
 namespace LibreHardwareMonitor;
 
-internal class RAMSPDToolkitDriver : IPawnIODriver
+internal sealed class RAMSPDToolkitDriver : IPawnIODriver
 {
     const string I801ModuleFilename = "SmbusI801.bin";
-    const string Piix4ModuleFilename = "SmbusPIIX4.bin";
     const string Nct6793ModuleFilename = "SmbusNCT6793.bin";
+    const string Piix4ModuleFilename = "SmbusPIIX4.bin";
 
-    private PawnIo.PawnIo _pawnIO;
+    private readonly List<PawnIOModule> _pawnIOModules = new();
 
     public bool IsOpen => true;
-
-    public int Execute(string name, long[] inBuffer, uint inSize, long[] outBuffer, uint outSize, out uint returnSize)
-    {
-        return _pawnIO.ExecuteHr(name, inBuffer, inSize, outBuffer, outSize, out returnSize);
-    }
 
     public bool Load()
     {
@@ -24,7 +21,7 @@ internal class RAMSPDToolkitDriver : IPawnIODriver
         return true;
     }
 
-    public bool LoadModule(PawnIOSMBusIdentifier pawnIOSMBusIdentifier)
+    public IPawnIOModule LoadModule(PawnIOSMBusIdentifier pawnIOSMBusIdentifier)
     {
         string moduleResourceFilename = pawnIOSMBusIdentifier switch
         {
@@ -36,23 +33,59 @@ internal class RAMSPDToolkitDriver : IPawnIODriver
 
         if (moduleResourceFilename == null)
         {
-            return false;
+            return null;
         }
+
+        PawnIOModule pawnIOModule = null;
 
         try
         {
-            _pawnIO = PawnIo.PawnIo.LoadModuleFromResource(typeof(RAMSPDToolkitDriver).Assembly, $"{nameof(LibreHardwareMonitor)}.Resources.PawnIO.{moduleResourceFilename}");
+            var pawnIO = PawnIo.PawnIo.LoadModuleFromResource(typeof(RAMSPDToolkitDriver).Assembly, $"{nameof(LibreHardwareMonitor)}.Resources.PawnIO.{moduleResourceFilename}");
+
+            if (pawnIO.IsLoaded)
+            {
+                pawnIOModule = new PawnIOModule(pawnIO);
+            }
         }
         catch
         {
-            return false;
+            return null;
         }
 
-        return _pawnIO != null;
+        if (pawnIOModule != null)
+        {
+            _pawnIOModules.Add(pawnIOModule);
+            return pawnIOModule;
+        }
+
+        return null;
     }
 
     public void Unload()
     {
-        _pawnIO.Close();
+        _pawnIOModules.ForEach(p => p.Dispose());
+        _pawnIOModules.Clear();
+    }
+
+    internal class PawnIOModule : IPawnIOModule, IDisposable
+    {
+        private PawnIo.PawnIo _pawnIO;
+
+        public PawnIOModule(PawnIo.PawnIo pawnIO)
+        {
+            _pawnIO = pawnIO;
+        }
+
+        public int Execute(string name, long[] inBuffer, uint inSize, long[] outBuffer, uint outSize, out uint returnSize)
+            => _pawnIO.ExecuteHr(name, inBuffer, inSize, outBuffer, outSize, out returnSize);
+
+        public void Dispose()
+        {
+            if (_pawnIO != null)
+            {
+                _pawnIO.Close();
+                _pawnIO = null;
+            }
+        }
     }
 }
