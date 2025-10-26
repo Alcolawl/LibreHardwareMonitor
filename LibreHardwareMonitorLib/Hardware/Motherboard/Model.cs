@@ -149,6 +149,7 @@ public enum Model
     X570_MS7C35,
     B850M_MORTAR_WIFI,
     B850_GAMING_PLUS_WIFI,
+    B850M_GAMING_PLUS_WIFI6E,
     B840P_PRO_WIFI,
     B850_TOMAHAWK_MAX_WIFI,
     B650M_PROJECT_ZERO,
@@ -174,6 +175,7 @@ public enum Model
     Z890S_PRO_WIFI,
     Z890_GAMING_PLUS_WIFI,
     Z890S_PRO_WIFI_PROJECT_ZERO,
+    B850S_PRO_WIFI6E,
 
     // EVGA
     X58_SLI_Classified,
@@ -235,6 +237,7 @@ public enum Model
     MA785GMT_UD2H,
     MA78LM_S2H,
     MA790X_UD3P,
+    MA790X_DS4,
     P35_DS3,
     P35_DS3L,
     P55_UD4,
