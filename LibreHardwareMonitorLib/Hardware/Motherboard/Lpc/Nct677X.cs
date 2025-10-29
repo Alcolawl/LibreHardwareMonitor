@@ -79,9 +79,9 @@ internal class Nct677X : ISuperIO
         else if (chip is Chip.NCT6687DR) // MSI AM5/LGA1851 Motherboards
         {
             // Each index in the below arrays represents a fan header
-            // ARRAY_KEY = new ushort[] { CPU FAN, PUMP, CHIPSET, EZ-CONNECT FAN, null, null, null, null, null, null, SYSFAN1, SYSFAN2, SYSFAN3, SYSFAN4, SYSFAN5, SYSFAN6 };
-            FAN_PWM_OUT_REG = new ushort[] { 0x160, 0x161, 0x162, 0x163, 0x164, 0x165, 0x166, 0x167, 0xFFF, 0xFFF, 0xE05, 0xE04, 0xE03, 0xE02, 0xE01, 0xE00 }; // Duty Cycle Sensors
-            FAN_PWM_COMMAND_REG = new ushort[] { 0xA28, 0xA29, 0xA2A, 0xA2B, 0xFFF, 0xFFF, 0xFFF, 0xFFF, 0xFFF, 0xFFF, 0xC70, 0xC58, 0xC40, 0xC28, 0xC10, 0xBF8 }; // Control Registers for CPU/Pump/EZ-Connect Fan, Initial Fan Curve Registers for System Fans
+            // ARRAY_KEY = new ushort[] { CPU FAN, PUMP, CHIPSET, EZ-CONNECT FAN, null, null, null, null, null, SYSFAN7, SYSFAN1, SYSFAN2, SYSFAN3, SYSFAN4, SYSFAN5, SYSFAN6 };
+            FAN_PWM_OUT_REG = new ushort[] { 0x160, 0x161, 0x162, 0x163, 0x164, 0x165, 0x166, 0x167, 0xFFF, 0xC93, 0xE05, 0xE04, 0xE03, 0xE02, 0xE01, 0xE00 }; // Duty Cycle Sensors
+            FAN_PWM_COMMAND_REG = new ushort[] { 0xA28, 0xA29, 0xA2A, 0xA2B, 0xFFF, 0xFFF, 0xFFF, 0xFFF, 0xFFF, 0xBE0, 0xC70, 0xC58, 0xC40, 0xC28, 0xC10, 0xBF8 }; // Control Registers for CPU/Pump/EZ-Connect Fan, Initial Fan Curve Registers for System Fans
             FAN_CONTROL_MODE_REG = new ushort[] { 0xA00, 0xA00, 0xA00, 0xA00, 0xA00, 0xA00, 0xA00, 0xA00, 0xA00, 0xA00, 0xA00, 0xA00, 0xA00, 0xA00, 0xA00, 0xA00 };
             FAN_PWM_REQUEST_REG = new ushort[] { 0xA01, 0xA01, 0xA01, 0xA01, 0xA01, 0xA01, 0xA01, 0xA01, 0xA01, 0xA01, 0xA01, 0xA01, 0xA01, 0xA01, 0xA01, 0xA01 };
         }
@@ -1022,7 +1022,7 @@ internal class Nct677X : ISuperIO
 
     private void Set6687DRControl(int index, byte? value)
     {
-        if (index > 9) // Brute Force System Fan Control
+        if (index > 8) // Brute Force System Fan Control
         {
             int initFanCurveReg = FAN_PWM_COMMAND_REG[index];       // Initial Register Address for the Fan Curve
             int targetFanCurveAddr = initFanCurveReg;               // Address of the Current Fan Curve Register we're writing to

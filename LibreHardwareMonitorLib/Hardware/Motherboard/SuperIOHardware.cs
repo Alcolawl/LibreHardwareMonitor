@@ -602,6 +602,9 @@ internal sealed class SuperIOHardware : Hardware
 
                     case Model.X870E_CARBON_WIFI:
                     case Model.X870E_GODLIKE:
+                        f.Add(new Fan("System Fan #7", 9));
+                        c.Add(new Control("System Fan #7", 9));
+                        
                         v.Add(new Voltage("+12V", 0));
                         v.Add(new Voltage("+5V", 1));
                         v.Add(new Voltage("CPU Northbridge/SoC", 2));
