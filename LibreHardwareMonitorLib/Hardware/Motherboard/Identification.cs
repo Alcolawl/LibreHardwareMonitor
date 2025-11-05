@@ -111,6 +111,8 @@ internal class Identification
         {
             case var _ when name.Equals("X870 AORUS ELITE WIFI7", StringComparison.OrdinalIgnoreCase):
                 return Model.X870_AORUS_ELITE_WIFI7;
+            case var _ when name.Equals("X870 AORUS ELITE WIFI7 ICE", StringComparison.OrdinalIgnoreCase):
+                return Model.X870_AORUS_ELITE_WIFI7_ICE;
             case var _ when name.Equals("880GMH/USB3", StringComparison.OrdinalIgnoreCase):
                 return Model._880GMH_USB3;
             case var _ when name.Equals("B85M-DGS", StringComparison.OrdinalIgnoreCase):
@@ -540,6 +542,9 @@ internal class Identification
                 return Model.B650M_AORUS_ELITE;
             case var _ when name.Equals("B650M AORUS ELITE AX", StringComparison.OrdinalIgnoreCase):
                 return Model.B650M_AORUS_ELITE_AX;
+            case var _ when name.Equals("B650I AX", StringComparison.OrdinalIgnoreCase):
+            case var _ when name.Equals("A620I AX", StringComparison.OrdinalIgnoreCase):
+                return Model.B650I_AX;
             case var _ when name.Equals("ROG STRIX Z390-E GAMING", StringComparison.OrdinalIgnoreCase):
                 return Model.ROG_STRIX_Z390_E_GAMING;
             case var _ when name.Equals("ROG STRIX Z390-F GAMING", StringComparison.OrdinalIgnoreCase):

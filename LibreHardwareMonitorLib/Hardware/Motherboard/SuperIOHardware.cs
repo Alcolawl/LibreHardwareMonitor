@@ -412,12 +412,7 @@ internal sealed class SuperIOHardware : Hardware
                         break;
                     case Manufacturer.ASRock when model == Model.X870E_TAICHI:
                         t.Add(new Temperature("CPU", 0));
-                        t.Add(new Temperature("System", 1));
                         t.Add(new Temperature("VRM MOS", 2));
-                        t.Add(new Temperature("PCH", 3));
-                        t.Add(new Temperature("CPU Socket", 4));
-                        t.Add(new Temperature("PCIe x1", 5));
-                        t.Add(new Temperature("M2_1", 6));
 
                         f.Add(new Fan("Water Pump", 0)); // W_PUMP
                         f.Add(new Fan("Chassis Fan #3", 1)); // CHA_FAN3
@@ -1900,6 +1895,30 @@ internal sealed class SuperIOHardware : Hardware
 
                         break;
 
+                    case Model.B650I_AX: // IT8689E
+                        v.Add(new Voltage("Vcore", 0));
+                        v.Add(new Voltage("+3.3V", 1, 29.4f, 45.3f));
+                        v.Add(new Voltage("+12V", 2, 10f, 2f));
+                        v.Add(new Voltage("+5V", 3, 15f, 10f));
+                        v.Add(new Voltage("Vcore SoC", 4));
+                        v.Add(new Voltage("Vcore Misc", 5));
+
+                        t.Add(new Temperature("System", 0));
+                        t.Add(new Temperature("PCH", 1));
+                        t.Add(new Temperature("CPU", 2));
+                        t.Add(new Temperature("VRM MOS", 4));
+                        t.Add(new Temperature("VSoC MOS", 5));
+
+                        f.Add(new Fan("CPU Fan", 0));
+                        f.Add(new Fan("System Fan #1", 1));
+                        f.Add(new Fan("System Fan #2", 2));
+
+                        c.Add(new Control("CPU Fan", 0));
+                        c.Add(new Control("System Fan #1", 1));
+                        c.Add(new Control("System Fan #2", 2));
+
+                        break;
+
                     case Model.B360M_H: // IT8686E
                         v.Add(new Voltage("Vcore", 0));
                         v.Add(new Voltage("+3.3V", 1, 29.4f, 45.3f));
@@ -2192,6 +2211,7 @@ internal sealed class SuperIOHardware : Hardware
                         break;
 
                     case Model.X870_AORUS_ELITE_WIFI7: // ITE IT8696E
+                    case Model.X870_AORUS_ELITE_WIFI7_ICE: // ITE IT8696E
                         t.Add(new Temperature("System #1", 0));
                         t.Add(new Temperature("PCH", 1));
                         t.Add(new Temperature("CPU", 2));
@@ -2828,6 +2848,7 @@ internal sealed class SuperIOHardware : Hardware
                         break;
 
                     case Model.X870_AORUS_ELITE_WIFI7: // ITE IT87952E
+                    case Model.X870_AORUS_ELITE_WIFI7_ICE: // ITE IT87952E
                         v.Add(new Voltage("Vcore", 0));
                         v.Add(new Voltage("DIMM I/O", 1));
                         v.Add(new Voltage("Chipset +0.82V", 2));
@@ -3808,19 +3829,18 @@ internal sealed class SuperIOHardware : Hardware
                         break;
 
                     case Model.X870E_TAICHI: // NCT6799D
-                        v.Add(new Voltage("Vcore", 0, 10, 10));
-                        v.Add(new Voltage("AVCC", 2, 34, 34));
+                        v.Add(new Voltage("Vcore", 0));
+                        v.Add(new Voltage("+12V", 1, 56, 10));
                         v.Add(new Voltage("+3.3V", 3, 34, 34));
-                        v.Add(new Voltage("+3V Standby", 7, 34, 34));
+                        v.Add(new Voltage("+5V", 4, 20, 10));
+                        v.Add(new Voltage("+1.05V Always-on", 5));
+                        v.Add(new Voltage("+3.3V Standby", 7, 34, 34));
                         v.Add(new Voltage("CMOS Battery", 8, 34, 34));
-                        v.Add(new Voltage("CPU Termination", 9));
+                        v.Add(new Voltage("Vcore SoC", 10, 1, 1));
+                        v.Add(new Voltage("Vcore Misc", 11, 1, 1));
+                        v.Add(new Voltage("+1.8V", 13, 1, 1));
 
-                        t.Add(new Temperature("CPU", 1));
                         t.Add(new Temperature("Motherboard", 2));
-                        t.Add(new Temperature("PCH TS10", 9));
-
-                        t.Add(new Temperature("Auxiliary", 3));
-                        t.Add(new Temperature("Auxiliary Index #1", 4));
 
                         t.Add(new Temperature("Thermistor Sensor #1", 5)); // T_SENSOR 1
                         t.Add(new Temperature("Thermistor Sensor #2", 6)); // T_SENSOR 2
@@ -5339,7 +5359,10 @@ internal sealed class SuperIOHardware : Hardware
                         t.Add(new Temperature("System", 2));      // SYSTIN, P-3906
                         t.Add(new Temperature("VRM MOS", 3));     // AUXTIN0, CPUMOSTIN, 10k at left side of cpu vrm
                         t.Add(new Temperature("Chipset", 5));     // AUXTIN2, 10k at back side of the chipset
-                        t.Add(new Temperature("CPU", 24));
+                        t.Add(new Temperature("CPU", 23));
+                        // Add temperature sensors for voltage inputs that are marked ad 
+                        t.Add(new Temperature("MOS CPU", 24));  // (VIN 4 Voltage) NTC Near MOSFET CPU VRM
+                        t.Add(new Temperature("PCH", 25));      // (Voltage #6) X570 Platform Control HUB TEMP (NTC On Bottom of PCB)
 
                         f.Add(new Fan("Pump Fan", 0));
                         f.Add(new Fan("CPU Fan", 1));
@@ -5685,6 +5708,33 @@ internal sealed class SuperIOHardware : Hardware
             {
                 sensor.Value = value + sensor.Parameters[0].Value;
                 ActivateSensor(sensor);
+            }
+            else
+            {
+                if (_motherboard.Model == Model.X570_MS7C35) // Add Temp Value for CPU MOS TEMPERATURE & PCH TEMPERATURE
+                {
+                    float voltage;
+
+                    if (sensor.Index == 24)
+                    {
+                        voltage = (float)_readVoltage(6);
+                    }
+                    else if (sensor.Index == 25) 
+                    {
+                        voltage = (float)_readVoltage(11);
+                    }
+                    else
+                    {
+                        voltage = 0;
+                    }
+
+                    double R = (10000.0 * voltage / (2.048 - 1.0));            //Convert voltage measured to resistance value
+                    double T = ((298.15 * 3435.0) / ((298.15 * Math.Log(R / 10000.0)) + 3435.0));  // Use R value in steinhart and hart equation, calculate temperature value in kelvin
+                    float Tc = (float)(T - 273.15);                            // Converting kelvin to celsius
+
+                    sensor.Value = Tc + sensor.Parameters[0].Value;
+                    ActivateSensor(sensor);
+                }
             }
         }
 
