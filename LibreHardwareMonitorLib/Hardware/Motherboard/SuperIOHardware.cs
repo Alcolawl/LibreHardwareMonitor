@@ -650,6 +650,7 @@ internal sealed class SuperIOHardware : Hardware
                         break;
 
                     case Model.Z890_EDGE_TI_WIFI:
+                    case Model.Z890I_EDGE_TI_WIFI:
                     case Model.Z890P_PRO_WIFI:
                     case Model.Z890A_PRO_WIFI:
                     case Model.Z890S_PRO_WIFI:
