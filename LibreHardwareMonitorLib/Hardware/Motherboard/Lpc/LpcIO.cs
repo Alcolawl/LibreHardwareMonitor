@@ -412,7 +412,10 @@ internal class LpcIO
                         switch (motherboard.Model)
                         {
                             case Model.B840P_PRO_WIFI:
+                            case Model.B840M_GAMING_PLUS_WIFI6E:
                             case Model.B850_GAMING_PLUS_WIFI:
+                            case Model.B850_GAMING_PLUS_WIFI6E:
+                            case Model.B850M_GAMING_PLUS_WIFI6E:
                             case Model.B850P_PRO_WIFI:
                             case Model.B850MA_PRO_WIFI:
                             case Model.B850MP_PRO_WIFI:
@@ -421,6 +424,7 @@ internal class LpcIO
                             case Model.B850_EDGE_TI_WIFI:
                             case Model.B850I_EDGE_TI_WIFI:
                             case Model.B850MPOWER:
+                            case Model.B850S_PRO_WIFI6E:
                             case Model.X870_GAMING_PLUS_WIFI:
                             case Model.X870E_GAMING_PLUS_WIFI:
                             case Model.X870_TOMAHAWK_WIFI:
@@ -439,8 +443,6 @@ internal class LpcIO
                             case Model.Z890P_PRO_WIFI:
                             case Model.Z890A_PRO_WIFI:
                             case Model.Z890S_PRO_WIFI:
-                            case Model.B850S_PRO_WIFI6E:
-                            case Model.B850M_GAMING_PLUS_WIFI6E:
                                 chip = Chip.NCT6687DR; // MSI AM5/LGA1851 Compatibility
                                 break;
                             default:
