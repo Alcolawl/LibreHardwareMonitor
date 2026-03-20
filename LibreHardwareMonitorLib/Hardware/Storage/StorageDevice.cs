@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using BlackSharp.Core.Converters;
+using BlackSharp.Core.Converters.Enums;
 using DiskInfoToolkit.Interop.Enums;
 using Windows.Win32;
 using Windows.Win32.Foundation;
@@ -59,6 +60,13 @@ public sealed class StorageDevice : Hardware, ISmart
     public DiskInfoToolkit.Storage Storage => _storage;
 
     public IReadOnlyList<SmartAttribute> Attributes => _attributes;
+
+    ///<inheritdoc cref="DiskInfoToolkit.Storage.ForceWakeup"/>
+    public bool ForceWakeup
+    {
+        get { return _storage.ForceWakeup; }
+        set { _storage.ForceWakeup = value; }
+    }
 
     public static TimeSpan ThrottleInterval { get; set; }
 
@@ -206,7 +214,7 @@ public sealed class StorageDevice : Hardware, ISmart
 
         var totalSpaceSensor = new Sensor("Total Space", 32, SensorType.Data, this, _settings)
         {
-            Value = (float)DataStorageSizeConverter.ByteToGigabyte(_storage.TotalSize)
+            Value = (float)DataUnitConverter.ToGigaByte(_storage.TotalSize, DataUnit.Byte)
         };
         ActivateSensor(totalSpaceSensor);
 
@@ -332,7 +340,7 @@ public sealed class StorageDevice : Hardware, ISmart
         {
             // Set sensor value
             _usageSensor.Value = 100.0f - (100.0f * _storage.TotalFreeSize / _storage.TotalSize);
-            _freeSpaceSensor.Value = (float)DataStorageSizeConverter.ByteToGigabyte(_storage.TotalFreeSize.GetValueOrDefault());
+            _freeSpaceSensor.Value = (float)DataUnitConverter.ToGigaByte(_storage.TotalFreeSize.GetValueOrDefault(), DataUnit.Byte);
         }
         else
         {

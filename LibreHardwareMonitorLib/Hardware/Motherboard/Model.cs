@@ -130,6 +130,7 @@ public enum Model
     PRIME_X870_P,
     ROG_CROSSHAIR_X870E_APEX,
     ROG_CROSSHAIR_X870E_HERO,
+    ROG_CROSSHAIR_X870E_DARK_HERO,
     ROG_STRIX_X870E_E_GAMING_WIFI,
     PROART_X870E_CREATOR_WIFI,
     PROART_B760_CREATOR_D4,
@@ -353,6 +354,7 @@ public enum Model
     FRANMACP04, // Intel Core i5-1240P
     FRANMACP06, // Intel Core i7-1260P
     FRANMACP08, // Intel Core i7-1280P
+    FRANMBCP04, // Intel Core i5-1240P Chromebook?
     FRANMCCP04, // Intel Core i5-1340P
     FRANMCCP06, // Intel Core i7-1360P
     FRANMCCP07, // Intel Core i7-1370P
@@ -364,6 +366,7 @@ public enum Model
     FRANMZCP07, // FW16 AMD Ryzen 7 7840HS
     FRANMZCP09, // FW16 AMD Ryzen 9 7940HS
     FRANMFCP02, // Desktop AMD RYZEN AI MAX 385
+    FRANMFCP04, // Desktop AMD RYZEN AI MAX+ 395
     FRANMFCP06, // Desktop AMD RYZEN AI MAX+ 395
     FRAPMACP03, // FW12 Intel Core i3-1315U
     FRAPMACP05, // FW12 Intel Core i5-1334U
